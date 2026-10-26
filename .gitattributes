@@ -1,0 +1,5 @@
+Dockerfile text eol=lf
+.dockerignore text eol=lf
+railway.toml text eol=lf
+vercel.json text eol=lf
+*.mjs text eol=lf

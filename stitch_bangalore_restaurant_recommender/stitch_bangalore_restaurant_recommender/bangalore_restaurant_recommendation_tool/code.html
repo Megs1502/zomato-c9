@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bangalore Restaurant Recommendation Tool</title>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            app: {
+              bg: '#12110F',
+              panel: '#1C1A17',
+              card: '#23201C',
+              border: '#3A342C',
+              primary: '#F4EFE6',
+              secondary: '#B7A99A',
+              muted: '#8A7D70',
+              accent: '#E4A15A',
+              accentHover: '#cf8e47',
+            }
+          },
+          fontFamily: {
+            sans: ['"Inter"', 'sans-serif'],
+            display: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom range slider styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: #3A342C;
+      height: 6px;
+      border-radius: 9999px;
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #E4A15A;
+      cursor: pointer;
+      border: 2px solid #1C1A17;
+      transition: transform 0.1s ease;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+    input[type=range]:focus-visible {
+      outline: 2px solid #E4A15A;
+      outline-offset: 2px;
+    }
+    /* Select arrow custom styling */
+    .custom-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23B7A99A'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px 16px;
+    }
+  </style>
+</head>
+<body class="min-h-full bg-[#12110F] text-[#F4EFE6] font-sans antialiased selection:bg-[#E4A15A]/30 selection:text-[#F4EFE6] p-6 flex flex-col justify-start items-center">
+
+  <!-- Main Container: Centered Column 1120px wide with 24px padding -->
+  <main class="w-full max-w-[1120px] mx-auto py-2">
+
+    <!-- Grid Layout: Left Sticky Form (340px) + Right Results Column -->
+    <div class="grid grid-cols-1 lg:grid-cols-[340px_minmax(0,1fr)] gap-8 items-start">
+
+      <!-- LEFT COLUMN: Sticky Form Panel -->
+      <section class="lg:sticky lg:top-6 bg-[#1C1A17] border border-[#3A342C] rounded-[12px] p-6 flex flex-col gap-6">
+        
+        <!-- Panel Header -->
+        <div class="border-b border-[#3A342C] pb-4">
+          <h1 class="text-xl font-semibold tracking-tight text-[#F4EFE6] font-display">
+            Find a table
+          </h1>
+          <p class="text-[13px] text-[#8A7D70] mt-1">Bangalore restaurant recommendation tool</p>
+        </div>
+
+        <form class="flex flex-col gap-5" onsubmit="event.preventDefault();">
+          
+          <!-- Locality field -->
+          <div class="flex flex-col gap-1.5">
+            <label for="locality" class="text-[13px] font-medium text-[#F4EFE6]">
+              Locality
+            </label>
+            <div class="relative">
+              <select id="locality" class="custom-select w-full appearance-none bg-[#23201C] border border-[#3A342C] text-[#F4EFE6] text-sm rounded-[8px] px-3.5 py-2.5 pr-10 focus:outline-none focus:ring-1 focus:ring-[#E4A15A] focus:border-[#E4A15A] transition-colors">
+                <option value="Banashankari" selected>Banashankari</option>
+                <option value="Indiranagar">Indiranagar</option>
+                <option value="Koramangala">Koramangala</option>
+                <option value="Jayanagar">Jayanagar</option>
+                <option value="Whitefield">Whitefield</option>
+                <option value="Malleshwaram">Malleshwaram</option>
+                <option value="HSR Layout">HSR Layout</option>
+              </select>
+            </div>
+            <span class="text-[12px] text-[#8A7D70]">Bangalore localities from the catalog.</span>
+          </div>
+
+          <!-- Budget field -->
+          <div class="flex flex-col gap-1.5">
+            <label for="budget" class="text-[13px] font-medium text-[#F4EFE6]">
+              Budget
+            </label>
+            <div class="relative">
+              <select id="budget" class="custom-select w-full appearance-none bg-[#23201C] border border-[#3A342C] text-[#F4EFE6] text-sm rounded-[8px] px-3.5 py-2.5 pr-10 focus:outline-none focus:ring-1 focus:ring-[#E4A15A] focus:border-[#E4A15A] transition-colors">
+                <option value="Low">Low (under ₹500)</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="High">High (₹1,001 and above)</option>
+              </select>
+            </div>
+            <span class="text-[12px] text-[#8A7D70]">₹501–₹1,000 for two</span>
+          </div>
+
+          <!-- Cuisine field with open suggestion popup -->
+          <div class="flex flex-col gap-1.5 relative">
+            <label for="cuisine" class="text-[13px] font-medium text-[#F4EFE6]">
+              Cuisine
+            </label>
+            <div class="relative">
+              <input 
+                id="cuisine" 
+                type="text" 
+                value="Italian" 
+                placeholder="Any cuisine"
+                class="w-full bg-[#23201C] border border-[#3A342C] text-[#F4EFE6] text-sm rounded-[8px] px-3.5 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#E4A15A] focus:border-[#E4A15A] transition-colors placeholder-[#8A7D70]"
+              />
+            </div>
+            <!-- Open suggestion dropdown menu -->
+            <div class="mt-1 bg-[#23201C] border border-[#3A342C] rounded-[8px] overflow-hidden shadow-lg z-20">
+              <div class="px-3 py-1.5 text-[11px] font-medium text-[#8A7D70] uppercase tracking-wider bg-[#1C1A17]/60 border-b border-[#3A342C]">
+                Suggestions
+              </div>
+              <ul class="py-1 text-sm divide-y divide-[#3A342C]/40">
+                <li class="px-3.5 py-2 text-[#E4A15A] bg-[#1C1A17] flex items-center justify-between font-medium cursor-pointer">
+                  <span>Italian</span>
+                  <span class="text-[11px] text-[#E4A15A] bg-[#E4A15A]/10 px-1.5 py-0.5 rounded border border-[#E4A15A]/30">Active</span>
+                </li>
+                <li class="px-3.5 py-2 text-[#B7A99A] hover:bg-[#1C1A17] hover:text-[#F4EFE6] cursor-pointer transition-colors">
+                  North Indian
+                </li>
+                <li class="px-3.5 py-2 text-[#B7A99A] hover:bg-[#1C1A17] hover:text-[#F4EFE6] cursor-pointer transition-colors">
+                  Chinese
+                </li>
+                <li class="px-3.5 py-2 text-[#B7A99A] hover:bg-[#1C1A17] hover:text-[#F4EFE6] cursor-pointer transition-colors">
+                  Mughlai
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Minimum rating slider -->
+          <div class="flex flex-col gap-2 pt-1">
+            <div class="flex justify-between items-center">
+              <label for="rating-slider" class="text-[13px] font-medium text-[#F4EFE6]">
+                Minimum rating
+              </label>
+              <div class="flex items-center gap-1">
+                <span class="text-sm font-semibold text-[#E4A15A] font-display" id="rating-val">4.0</span>
+                <span class="text-[12px] text-[#8A7D70]">/ 5.0</span>
+              </div>
+            </div>
+            <input 
+              id="rating-slider" 
+              type="range" 
+              min="0" 
+              max="5" 
+              step="0.5" 
+              value="4.0" 
+              class="w-full cursor-pointer accent-[#E4A15A]"
+              oninput="document.getElementById('rating-val').innerText = parseFloat(this.value).toFixed(1);"
+            />
+            <div class="flex justify-between text-[11px] text-[#8A7D70]">
+              <span>0.0</span>
+              <span>2.5</span>
+              <span>5.0</span>
+            </div>
+          </div>
+
+          <!-- Extra preferences textarea -->
+          <div class="flex flex-col gap-1.5">
+            <div class="flex justify-between items-center">
+              <label for="preferences" class="text-[13px] font-medium text-[#F4EFE6]">
+                Extra preferences
+              </label>
+              <span class="text-[11px] text-[#8A7D70] font-mono">32/300</span>
+            </div>
+            <textarea 
+              id="preferences" 
+              rows="3" 
+              class="w-full bg-[#23201C] border border-[#3A342C] text-[#F4EFE6] text-sm rounded-[8px] p-3 focus:outline-none focus:ring-1 focus:ring-[#E4A15A] focus:border-[#E4A15A] transition-colors resize-none placeholder-[#8A7D70] leading-relaxed"
+            >family-friendly, quick service</textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <button 
+            type="submit" 
+            class="w-full mt-2 bg-[#E4A15A] hover:bg-[#cf8e47] active:bg-[#b87834] text-[#12110F] font-semibold text-sm py-3 px-4 rounded-[8px] transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#E4A15A] focus:ring-offset-2 focus:ring-offset-[#1C1A17]"
+          >
+            Recommend
+          </button>
+        </form>
+      </section>
+
+
+      <!-- RIGHT COLUMN: Results Column -->
+      <section class="flex flex-col gap-6">
+
+        <!-- Status line: Quiet row of text -->
+        <div class="flex items-center gap-2 text-[13px] text-[#8A7D70] px-1 py-0.5">
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#E4A15A]"></span>
+          <p class="font-medium tracking-wide">Banashankari · Medium · Italian · 4.0+</p>
+        </div>
+
+        <!-- Summary panel -->
+        <div class="bg-[#1C1A17] border border-[#3A342C] rounded-[12px] p-5">
+          <div class="flex items-start gap-3">
+            <div class="text-[#E4A15A] mt-0.5 shrink-0">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <p class="text-[14px] leading-relaxed text-[#B7A99A]">
+              <strong class="text-[#F4EFE6] font-medium">Jalsa</strong> is the stronger pick for a family dinner, with a higher rating and table booking. <strong class="text-[#F4EFE6] font-medium">Onesta</strong> is the more casual, lower-cost option.
+            </p>
+          </div>
+        </div>
+
+        <!-- Ranked Restaurant Cards Stack -->
+        <div class="flex flex-col gap-4">
+
+          <!-- Card 1: Jalsa -->
+          <article class="bg-[#23201C] border border-[#3A342C] rounded-[12px] p-6 flex flex-col gap-4 transition-colors hover:border-[#E4A15A]/40">
+            <!-- Top line: Rank mark and Name -->
+            <div class="flex items-baseline gap-3">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#E4A15A]/15 border border-[#E4A15A]/30 text-[#E4A15A] text-xs font-bold font-display shrink-0">
+                1
+              </span>
+              <div class="flex-1">
+                <h2 class="text-[20px] font-semibold tracking-tight text-[#F4EFE6] font-display leading-tight">
+                  Jalsa
+                </h2>
+                <!-- Address and restaurant type on one muted line -->
+                <p class="text-[13px] text-[#8A7D70] mt-1 leading-normal">
+                  942, 21st Main Road, 2nd Stage, Banashankari, Bangalore · Casual Dining
+                </p>
+              </div>
+            </div>
+
+            <!-- Cuisine chips -->
+            <div class="flex flex-wrap gap-2 pt-0.5">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#1C1A17] border border-[#3A342C] text-[#B7A99A]">
+                North Indian
+              </span>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#1C1A17] border border-[#3A342C] text-[#B7A99A]">
+                Mughlai
+              </span>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#1C1A17] border border-[#3A342C] text-[#B7A99A]">
+                Chinese
+              </span>
+            </div>
+
+            <!-- Rating and cost for two on one row -->
+            <div class="flex items-center gap-6 py-1 border-y border-[#3A342C]/60 text-sm">
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs text-[#8A7D70]">Rating</span>
+                <span class="font-semibold text-[#E4A15A] text-base font-display">4.1</span>
+              </div>
+              <div class="h-3 w-px bg-[#3A342C]"></div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs text-[#8A7D70]">Cost</span>
+                <span class="font-medium text-[#F4EFE6]">₹800 for two</span>
+              </div>
+            </div>
+
+            <!-- Written reason / explanation paragraph -->
+            <p class="text-[15px] leading-relaxed text-[#B7A99A]">
+              A comfortable family dining room with a strong rating and table booking. The cost for two sits in your medium budget.
+            </p>
+          </article>
+
+          <!-- Card 2: Onesta -->
+          <article class="bg-[#23201C] border border-[#3A342C] rounded-[12px] p-6 flex flex-col gap-4 transition-colors hover:border-[#E4A15A]/40">
+            <!-- Top line: Rank mark and Name -->
+            <div class="flex items-baseline gap-3">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#E4A15A]/15 border border-[#E4A15A]/30 text-[#E4A15A] text-xs font-bold font-display shrink-0">
+                2
+              </span>
+              <div class="flex-1">
+                <h2 class="text-[20px] font-semibold tracking-tight text-[#F4EFE6] font-display leading-tight">
+                  Onesta
+                </h2>
+                <!-- Address and restaurant type on one muted line -->
+                <p class="text-[13px] text-[#8A7D70] mt-1 leading-normal">
+                  246, 1st Floor, 24th Main, Banashankari · Cafe, Casual Dining
+                </p>
+              </div>
+            </div>
+
+            <!-- Cuisine chips -->
+            <div class="flex flex-wrap gap-2 pt-0.5">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#1C1A17] border border-[#3A342C] text-[#B7A99A]">
+                Italian
+              </span>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#1C1A17] border border-[#3A342C] text-[#B7A99A]">
+                Pizza
+              </span>
+            </div>
+
+            <!-- Rating and cost for two on one row -->
+            <div class="flex items-center gap-6 py-1 border-y border-[#3A342C]/60 text-sm">
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs text-[#8A7D70]">Rating</span>
+                <span class="font-semibold text-[#E4A15A] text-base font-display">4.0</span>
+              </div>
+              <div class="h-3 w-px bg-[#3A342C]"></div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs text-[#8A7D70]">Cost</span>
+                <span class="font-medium text-[#F4EFE6]">₹600 for two</span>
+              </div>
+            </div>
+
+            <!-- Written reason / explanation paragraph -->
+            <p class="text-[15px] leading-relaxed text-[#B7A99A]">
+              The closest Italian fit, with pizza and a lower cost for two than Jalsa. Better if you want a casual meal.
+            </p>
+          </article>
+
+          <!-- Card 3: Milano Ice Cream -->
+          <article class="bg-[#23201C] border border-[#3A342C] rounded-[12px] p-6 flex flex-col gap-4 transition-colors hover:border-[#E4A15A]/40">
+            <!-- Top line: Rank mark and Name -->
+            <div class="flex items-baseline gap-3">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#E4A15A]/15 border border-[#E4A15A]/30 text-[#E4A15A] text-xs font-bold font-display shrink-0">
+                3
+              </span>
+              <div class="flex-1">
+                <h2 class="text-[20px] font-semibold tracking-tight text-[#F4EFE6] font-display leading-tight">
+                  Milano Ice Cream
+                </h2>
+                <!-- Address and restaurant type on one muted line -->
+                <p class="text-[13px] text-[#8A7D70] mt-1 leading-normal">
+                  57, Opposite Apollo Pharmacy, Banashankari · Dessert Parlor
+                </p>
+              </div>
+            </div>
+
+            <!-- Cuisine chips -->
+            <div class="flex flex-wrap gap-2 pt-0.5">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#1C1A17] border border-[#3A342C] text-[#B7A99A]">
+                Ice Cream
+              </span>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#1C1A17] border border-[#3A342C] text-[#B7A99A]">
+                Desserts
+              </span>
+            </div>
+
+            <!-- Rating and cost for two on one row -->
+            <div class="flex items-center gap-6 py-1 border-y border-[#3A342C]/60 text-sm">
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs text-[#8A7D70]">Rating</span>
+                <span class="font-semibold text-[#E4A15A] text-base font-display">4.6</span>
+              </div>
+              <div class="h-3 w-px bg-[#3A342C]"></div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs text-[#8A7D70]">Cost</span>
+                <span class="font-medium text-[#F4EFE6]">₹400 for two</span>
+              </div>
+            </div>
+
+            <!-- Written reason / explanation paragraph -->
+            <p class="text-[15px] leading-relaxed text-[#B7A99A]">
+              Highest rating of the three, but it is a dessert stop rather than a full Italian meal.
+            </p>
+          </article>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+</body>
+</html>

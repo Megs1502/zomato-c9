@@ -1,0 +1,5 @@
+{
+  "framework": null,
+  "buildCommand": "node scripts/prepare-frontend.mjs",
+  "outputDirectory": "frontend-dist"
+}
