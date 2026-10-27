@@ -24,7 +24,7 @@ def test_index_serves_the_search_page() -> None:
     assert "/api/meta" in script.text
     assert "/api/recommendations" in script.text
     assert style.status_code == 200
-    assert "#12110f" in style.text
+    assert "#111318" in style.text
 
 
 def test_cors_echoes_a_vercel_origin_and_refuses_credentials() -> None:

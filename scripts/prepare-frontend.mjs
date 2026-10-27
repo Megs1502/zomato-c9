@@ -1,4 +1,4 @@
-import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -34,8 +34,10 @@ if (apiBase) {
 }
 
 await mkdir(staticDir, { recursive: true });
-await copyFile(path.join(sourceDir, "app.js"), path.join(staticDir, "app.js"));
-await copyFile(path.join(sourceDir, "styles.css"), path.join(staticDir, "styles.css"));
+for (const name of await readdir(sourceDir)) {
+  if (name === "index.html") continue;
+  await copyFile(path.join(sourceDir, name), path.join(staticDir, name));
+}
 
 let html = await readFile(path.join(sourceDir, "index.html"), "utf8");
 if (!html.includes(scriptTag)) {

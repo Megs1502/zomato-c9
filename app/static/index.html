@@ -3,119 +3,117 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bangalore Restaurant Recommendation Tool</title>
+  <title>Find a table · Bangalore</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,460&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <main class="page">
-    <div class="layout">
-      <section class="panel" aria-labelledby="form-title">
-        <header class="panel-header">
-          <h1 id="form-title">Find a table</h1>
-          <p>Bangalore restaurant recommendation tool</p>
-        </header>
+  <header class="topbar">
+    <a class="brand" href="/">Table <em>Bangalore</em></a>
+    <span class="edition">Evening listings</span>
+  </header>
 
-        <p id="load-error" class="load-error" hidden></p>
+  <main>
+    <section class="hero">
+      <div class="hero-photo" role="img" aria-label="A candlelit restaurant table"></div>
+      <div class="hero-scrim"></div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <span class="rule" aria-hidden="true"></span>
+          <h1>Find a table<br><em>worth staying out for</em></h1>
+          <span class="rule" aria-hidden="true"></span>
+          <p>Bangalore restaurants chosen for your locality, budget, cuisine, and rating.</p>
+        </div>
 
-        <form id="search-form" class="form" autocomplete="off">
-          <div class="field">
-            <label for="locality">Locality</label>
-            <select id="locality" class="custom-select" name="location" required>
-              <option value="">Loading localities…</option>
-            </select>
-            <span class="hint">Bangalore localities from the catalog.</span>
-          </div>
-
-          <div class="field">
-            <label for="budget">Budget</label>
-            <select id="budget" class="custom-select" name="budget">
-              <option value="low">Low (under ₹500)</option>
-              <option value="medium" selected>Medium</option>
-              <option value="high">High (₹1,001 and above)</option>
-            </select>
-            <span id="budget-hint" class="hint">₹501–₹1,000 for two</span>
-          </div>
-
-          <div class="field">
-            <label for="cuisine">Cuisine</label>
-            <input id="cuisine" name="cuisine" type="text" placeholder="Any cuisine" maxlength="80">
-            <div id="cuisine-menu" class="menu" hidden>
-              <div class="menu-label">Suggestions</div>
-              <ul id="cuisine-suggestions"></ul>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="field-label">
-              <label for="rating-slider">Minimum rating</label>
-              <div class="rating-readout">
-                <span id="rating-val">0.0</span>
-                <span class="hint">/ 5.0</span>
+        <div class="glass">
+          <p id="load-error" class="load-error" hidden></p>
+          <form id="search-form" autocomplete="off">
+            <div class="form-grid">
+              <div class="field">
+                <label for="locality">Locality</label>
+                <select id="locality" name="location" required>
+                  <option value="">Loading localities…</option>
+                </select>
+                <span class="hint">Bangalore localities from the catalog.</span>
+              </div>
+              <div class="field">
+                <label for="budget">Budget</label>
+                <select id="budget" name="budget">
+                  <option value="low">Low (under ₹500)</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High (₹1,001 and above)</option>
+                </select>
+                <span id="budget-hint" class="hint hint-gold">₹501–₹1,000 for two</span>
+              </div>
+              <div class="field cuisine-field">
+                <label for="cuisine">Cuisine</label>
+                <input id="cuisine" name="cuisine" type="text" placeholder="Any cuisine" maxlength="80" autocomplete="off">
+                <div id="cuisine-menu" class="menu" hidden>
+                  <ul id="cuisine-suggestions"></ul>
+                </div>
+              </div>
+              <div class="field">
+                <div class="field-label">
+                  <label for="rating-slider">Minimum rating</label>
+                  <span class="rating-readout"><span id="rating-val">0.0</span><span> / 5.0</span></span>
+                </div>
+                <div class="slider-well">
+                  <input id="rating-slider" type="range" min="0" max="5" step="0.5" value="0">
+                </div>
               </div>
             </div>
-            <input id="rating-slider" type="range" min="0" max="5" step="0.5" value="0">
-            <div class="scale">
-              <span>0.0</span>
-              <span>2.5</span>
-              <span>5.0</span>
+            <div class="field">
+              <div class="field-label">
+                <label for="preferences">Extra preferences</label>
+                <span id="preference-count" class="counter">0/300</span>
+              </div>
+              <textarea id="preferences" name="additional_preferences" rows="2" maxlength="300" placeholder="family-friendly, quick service"></textarea>
             </div>
-          </div>
-
-          <div class="field">
-            <div class="field-label">
-              <label for="preferences">Extra preferences</label>
-              <span id="preference-count" class="counter">0/300</span>
-            </div>
-            <textarea id="preferences" name="additional_preferences" rows="3" maxlength="300" placeholder="family-friendly, quick service"></textarea>
-          </div>
-
-          <button id="submit" type="submit" disabled>Recommend</button>
-        </form>
-      </section>
-
-      <section id="results" class="results" aria-live="polite">
-        <p id="idle" class="idle">Set a locality and choose Recommend.</p>
-
-        <div id="status-row" hidden>
-          <p id="status-line" class="status-line"></p>
-          <div id="relaxed" class="relax-chips"></div>
+            <button id="submit" type="submit" disabled>Recommend</button>
+          </form>
         </div>
+      </div>
+    </section>
 
-        <div id="fallback" class="note" hidden>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <p>Ordered by rating and popularity because a written recommendation was unavailable.</p>
-        </div>
+    <section class="band">
+      <div class="band-inner">
+        <h2>A short list, from real listings.</h2>
+        <p>Each result is a Bangalore restaurant from the catalog. The rank and the explanation are written for this search. Name, cuisine, rating, and cost always come from the listing.</p>
+      </div>
+    </section>
 
-        <div id="summary" class="summary" hidden>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <p id="summary-text"></p>
-        </div>
-
-        <div id="empty" class="empty" hidden>
-          <div class="empty-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-          </div>
-          <p id="empty-text"></p>
-        </div>
-
-        <div id="error" class="alert" hidden>
-          <div class="alert-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-          </div>
-          <div>
-            <h2 id="error-title"></h2>
-            <p id="error-detail"></p>
-            <div id="error-suggestions" class="relax-chips"></div>
-          </div>
-        </div>
-
-        <div id="cards" class="cards"></div>
-      </section>
-    </div>
+    <section id="results" class="results" aria-live="polite">
+      <p id="idle" class="idle">Set a locality and choose Recommend.</p>
+      <div id="status-row" class="status-row" hidden>
+        <p id="status-line" class="status-line"></p>
+        <div id="relaxed" class="relax-chips"></div>
+      </div>
+      <div id="fallback" class="note" hidden>
+        <p>Ordered by rating and popularity because a written recommendation was unavailable.</p>
+      </div>
+      <div id="summary" class="summary" hidden>
+        <span class="eyebrow">Curator's synthesis</span>
+        <p id="summary-text"></p>
+      </div>
+      <div id="empty" class="empty" hidden>
+        <h2>No concordant tables found</h2>
+        <p id="empty-text"></p>
+      </div>
+      <div id="error" class="alert" hidden>
+        <h2 id="error-title"></h2>
+        <p id="error-detail"></p>
+        <div id="error-suggestions" class="relax-chips"></div>
+      </div>
+      <div id="cards" class="cards"></div>
+    </section>
   </main>
+
+  <footer class="footer">
+    <span class="brand">Table <em>Bangalore</em></span>
+    <span>Recommendations from the cleaned catalog. No bookings.</span>
+  </footer>
   <script src="/static/app.js" defer></script>
 </body>
 </html>
